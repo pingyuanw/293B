@@ -1,7 +1,10 @@
 import numpy as np 
+import anonymize
+
 filename = "data.txt"
 
 def store(data):
+	data = anonymize.anonymize(data)
 	f = open(filename, "w")
 	f.write(data)
 	f.write('\n')
