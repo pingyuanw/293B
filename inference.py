@@ -1,2 +1,2 @@
-def infer(data, model):
+def infer(data):
 	#todo output inference

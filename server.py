@@ -1,6 +1,8 @@
 #communicate with client
 import socket
 import sys
+import storage
+import inference
 
 TCP_IP = 'localhost'
 TCP_PORT = 5555
@@ -15,6 +17,9 @@ while(1):
 	if not data: break
 	print("received data: "+str(data))
 	connection.send(data)
+	
+	storage.store(data)
 	response = infer(data)
+	
 	connection.send(response)
 connection.close()
