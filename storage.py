@@ -5,7 +5,7 @@ filename = "data.txt"
 
 def store(data):
 	data = anonymize.anonymize(data)
-	f = open(filename, "w")
+	f = open(filename, "a")
 	f.write(data)
 	f.write('\n')
 	f.close()
