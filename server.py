@@ -18,8 +18,13 @@ while(1):
 	print("received data: "+str(data))
 	connection.send(data)
 	
-	storage.store(data)
-	response = infer(data)
+	connection.send("do we have your consent to store the data?")
+	consent = connection.recv(BUFFER_SIZE)
+
+	if(consent):
+		storage.store(data)
+
+	response = inference.infer(data)
 	
 	connection.send(response)
 connection.close()
