@@ -1,20 +1,30 @@
 import numpy as np 
 import anonymize
+import datetime
+import os
+import glob
 
-filename = "data.txt"
+filepath = './data/'
 
 def store(data):
 	data = anonymize.anonymize(data)
-	f = open(filename, "a")
+
+	filename = datetime.datetime.now()
+	f = open(filepath+filename+".png",'wb')
 	f.write(data)
-	f.write('\n')
 	f.close()
 
 def clear_storage():
-	open(filename, 'w').close()
+	files = glob.glob(filepath+'*')
+	for f in files:
+		os.remove(f)
+
 
 def sent_storage(dest):
 	# todo sent all stored data to s3?
 
-	clear_storage(filename)
+	#delete contents after send
+	#clear_storage(filename)
+
+	pass
 
