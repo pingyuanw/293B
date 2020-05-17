@@ -8,6 +8,12 @@ TCP_IP = '127.0.0.1'#localhost
 TCP_PORT = 5000
 BUFFER_SIZE = 1024
 
+aws_access_key_id='AKIAZW3FLGEM7FJQAL4R'
+aws_secret_access_key='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'
+
+
+inference_handler = inference.Inference(aws_access_key_id, aws_secret_access_key)
+
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.bind((TCP_IP, TCP_PORT))
 sock.listen(1)
@@ -25,7 +31,7 @@ while(1):
 	if(consent):
 		storage.store(str(data))
 
-	response = inference.infer(data)
+	response = inference_handler.predict(data)
 	
 	connection.send(bytes(response))
 connection.close()
