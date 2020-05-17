@@ -8,8 +8,8 @@ TCP_IP = '127.0.0.1'#localhost
 TCP_PORT = 5000
 BUFFER_SIZE = 1024
 
-aws_access_key_id='AKIAZW3FLGEM7FJQAL4R'
-aws_secret_access_key='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'
+aws_access_key_id='Secret'
+aws_secret_access_key='Secret'
 
 
 inference_handler = inference.Inference(aws_access_key_id, aws_secret_access_key)
