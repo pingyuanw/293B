@@ -34,10 +34,11 @@ while(1):
 	consent = connection.recv(BUFFER_SIZE)
 	print(consent)
 
-	if(consent):
-		storage.store(data)
-
 	response = inference_handler.predict(data)
+
+	if(consent):
+		storage.store(response, data)
+
 	
 	connection.send(bytes(response))
 

@@ -6,11 +6,11 @@ import glob
 
 filepath = './data/'
 
-def store(data):
+def store(label, data):
 	data = anonymize.anonymize(data)
 
 	filename = datetime.datetime.now()
-	f = open(filepath+filename+".png",'wb')
+	f = open(filepath+label+'.'filename+".png",'wb')
 	f.write(data)
 	f.close()
 
