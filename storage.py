@@ -5,10 +5,11 @@ import os
 import glob
 
 filepath = './data/'
+anonymize_path = './anonymized/'
 
 def store(label, data):
-	filename = datetime.datetime.now()
-	f = open(filepath+label+'.'filename+".png",'wb')
+	filename = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+	f = open(filepath+label+'-'+filename+".png",'wb+')
 	f.write(data)
 	f.close()
 
@@ -20,11 +21,14 @@ def clear_storage():
 
 def sent_storage(dest):
 	#todo anonymize img before sending.
-	anonymized_img_list = []
+	files = glob.glob(filepath+'*')
 	for f in files:
-		anonymized_img_list.append(anonymize(f))
+		new_img = anonymize(f)
+		new_f= open(anonymize_path+str(f),'wb')
+		new_f.write(data)
+		new_f.close()
 
-	# todo sent anonumized img data to s3?
+	# todo sent anonymized img data to s3?
 
 	#delete contents after send
 	clear_storage(filename)
