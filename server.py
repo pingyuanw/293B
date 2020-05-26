@@ -39,8 +39,8 @@ while(recieved<filesize):
 	print("receiving")
 print("done receiving ...")
 
-#response = inference_handler.predict(data)
-response = 'dog'
+response = inference_handler.predict(data)
+#response = 'dog'
 
 response_size = pack('!I', len(response))
 connection.send(response_size)

@@ -3,6 +3,7 @@ import anonymize
 import datetime
 import os
 import glob
+import cv2
 
 filepath = './data/'
 anonymize_path = './anonymized/'
@@ -26,9 +27,8 @@ def sent_storage(dest):
 	for f in files:
 		print(f)
 		new_img = anonymize.anonymize(str(f))
-		new_f= open(anonymize_path+str(f)[7:],'wb+')
-		new_f.write(new_img)
-		new_f.close()
+		cv2.imwrite(anonymize_path+str(f)[7:], new_img)
+	
 
 	# todo sent anonymized img data to s3?
 
