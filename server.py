@@ -22,38 +22,39 @@ sock.bind((TCP_IP, TCP_PORT))
 sock.listen(1)
 connection, client_address = sock.accept()
 
-while(1):
-	data = connection.recv(4)
-	filesize = unpack('!I', data)[0]
-	print("file size is: "+str(filesize))
 
-	data = []
+data = connection.recv(4)
+filesize = unpack('!I', data)[0]
+print("file size is: "+str(filesize))
+
+data =[]
+msg = connection.recv(BUFFER_SIZE)
+recieved = 1024
+data.append(msg)
+
+while(recieved<filesize):
+	recieved+=BUFFER_SIZE
 	msg = connection.recv(BUFFER_SIZE)
-	recieved = 1024
-	
-	while(recieved<filesize):
-		recieved+=BUFFER_SIZE
-		data += msg
-		msg = connection.recv(BUFFER_SIZE)
-		print("receiving")
-	print("done receiving ...")
+	data.append(msg)
+	print("receiving")
+print("done receiving ...")
 
-	#response = inference_handler.predict(data)
-	response = 'dog'
+#response = inference_handler.predict(data)
+response = 'dog'
 
-	response_size = pack('!I', len(response))
-	connection.send(response_size)
+response_size = pack('!I', len(response))
+connection.send(response_size)
 
-	connection.send(response.encode())
+connection.send(response.encode())
 
 	
-	connection.send("do we have your consent to store the data?".encode())
+connection.send("do we have your consent to store the data?".encode())
 	
-	consent = connection.recv(BUFFER_SIZE)
-	print(consent)
+consent = connection.recv(BUFFER_SIZE)
+print(consent)
 
 
-	if(consent):
-		storage.store(response, data)
+if(consent):
+	storage.store(response, data)
 
 connection.close()
