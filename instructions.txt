@@ -1,0 +1,7 @@
+1. Install the following dependencies:
+	Werkzeug
+	Flask
+	gevent
+
+2. Run python app.py
+3. Open browser and go to http://127.0.0.1:5000

@@ -7,10 +7,11 @@ import glob
 filepath = './data/'
 
 def store(label, data):
-	filename = datetime.datetime.now()
-	f = open(filepath+label+'.'filename+".png",'wb')
-	f.write(data)
-	f.close()
+	filename = str(datetime.datetime.now())
+	#f = open(filepath+label+'.'+filename+".png",'wb')
+	#f.write(data)
+	#f.close()
+	data.save(filepath+label+'.'+filename+".jpg","JPEG")
 
 def clear_storage():
 	files = glob.glob(filepath+'*')
