@@ -134,6 +134,15 @@ function displayResult(data) {
   hide(loader);
   predResult.innerHTML = data.result;
   show(predResult);
+  setTimeout(function() {
+	  if (confirm("Press OK if the classification is incorrect and you would like to provide the correct label to help improve the system.")) {
+		txt = window.prompt("Please enter the correct label:","");
+		 window.alert(txt);
+	  } else {
+		//txt = "You pressed Cancel!";
+	  }
+  }, (1 * 1000));
+  
 }
 
 function hide(el) {
