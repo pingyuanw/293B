@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import random
+from scipy import ndimage
 
 #anonymize dataset before storage
 
@@ -20,12 +21,21 @@ def salt_and_pepper(image,prob):
                 output[i][j] = image[i][j]
     return output
 
+def soble_filter(image):
+    im = image.astype('int32')
+    dx = ndimage.sobel(im, 0) 
+    dy = ndimage.sobel(im, 1)
+    #calculate hypotenuse
+    noisy_image = np.hypot(dx, dy)
+    noisy_image *= 255.0 / np.max(noisy_image)
+    return noisy_image
+
 def anonymize(imgname):
-	image = cv2.imread(imgname)
 
+    image = cv2.imread(imgname)
+    if(random.random()<0.5):
+        noisy_image = salt_and_pepper(image,0.05)
+    else:
+        noisy_image = soble_filter(image)
 
-	#noisy_image = image + np.random.normal(mean, sigma, image.shape)
-
-	noisy_image = salt_and_pepper(image,0.05)
-
-	return noisy_image
+    return noisy_image
