@@ -4,22 +4,28 @@ import datetime
 import os
 import glob
 import cv2
+from shutil import copyfile
 
 filepath = './data/'
 anonymize_path = './anonymized/'
+temp_path = './temp/'
 
-def store(label, data):
-	filename = datetime.datetime.now().strftime("%m-%d-%Y,%H:%M:%S")
+def copy_file(label, hash_value):
+	if os.path.exists(temp_path+hash_value+".jpg"):
+		filename = datetime.datetime.now().strftime("%m-%d-%Y,%H:%M:%S")
+		copyfile(temp_path+hash_value+".jpg", filepath+label+"."+filename+".jpg")
+
+def temp_store(filename, data):
+	#filename = datetime.datetime.now().strftime("%m-%d-%Y,%H:%M:%S")
 	#f = open(filepath+label+'.'+filename+".png",'wb')
 	#f.write(data)
 	#f.close()
-	data.save(filepath+label+'.'+filename+".jpg","JPEG")
+	data.save(temp_path+filename+".jpg","JPEG")
 
 
-def clear_storage():
-	files = glob.glob(filepath+'*')
-	for f in files:
-		os.remove(f)
+def remove_file(filename):
+	if os.path.exists(temp_path+filename+".jpg"):
+		os.remove(temp_path+filename+".jpg")
 
 
 def sent_storage(dest):

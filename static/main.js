@@ -137,9 +137,23 @@ function displayResult(data) {
   setTimeout(function() {
 	  if (confirm("Press OK if the classification is incorrect and you would like to provide the correct label to help improve the system.")) {
 		txt = window.prompt("Please enter the correct label:","");
-		 window.alert(txt);
+		fetch("/feedback", {
+    		method: "POST",
+    		headers: {
+      			"Content-Type": "application/json"
+    		},
+    		body: JSON.stringify({ "hash_value" : data.hash_value, "label": txt })
+  })
+
 	  } else {
-		//txt = "You pressed Cancel!";
+		fetch("/feedback", {
+    		method: "POST",
+    		headers: {
+      			"Content-Type": "application/json"
+    		},
+    		body: JSON.stringify({ "hash_value" : data.hash_value, "label": "ok" })
+  })
+
 	  }
   }, (1 * 1000));
   

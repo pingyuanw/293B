@@ -15,8 +15,8 @@ import numpy as np
 from util import base64_to_pil
 
 TCP_PORT = 5000
-aws_access_key_id='Secret'
-aws_secret_access_key='Secret'
+aws_access_key_id=''
+aws_secret_access_key=''
 # Declare a flask app
 app = Flask(__name__)
 
@@ -37,13 +37,29 @@ def index():
 def predict():
     if request.method == 'POST':
         img = base64_to_pil(request.json)
-
+        hash_value = str(hex(hash(img.tobytes())))
         response = inference_handler.predict(img)
-        storage.store(response, img)
+        storage.temp_store(hash_value, img)
         
-        return jsonify(result=response)
+        return jsonify(result=response, hash_value=hash_value)
 
     return None
+
+@app.route('/feedback', methods=['GET', 'POST'])
+def feedback():
+    if request.method == 'POST':
+        hash_value = request.json['hash_value']
+        correct_label = request.json['label']
+        if(correct_label != "ok"):
+            storage.copy_file(correct_label, hash_value)
+        #print("Label is "+correct_label+" Hash is "+hash_value) 
+        #print("Received feedback") 
+        storage.remove_file(hash_value)
+        resp = jsonify(success=True)
+        return resp
+
+    return None
+
 
 
 if __name__ == '__main__':
