@@ -14,7 +14,7 @@ def index():
 def upload():
 	s3 = boto3.resource('s3')
 
-	s3.Bucket('prettyprinted').put_object(Key = 'a_python_file.py', Body=request.files['myfile'])
+	s3.Bucket('hummingbird-293').put_object(Key = 'edgeTeam/dog.png', Body=request.files['myfile'])
 
 	return '<h1>File saved to S3>/h1'
 
