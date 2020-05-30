@@ -5,6 +5,7 @@ import os
 import glob
 import cv2
 from shutil import copyfile
+import toS3
 
 filepath = './data/'
 anonymize_path = './anonymized/'
@@ -28,6 +29,7 @@ def remove_file(filename):
 		os.remove(temp_path+filename+".jpg")
 
 
+
 def sent_storage(dest):
 	#todo anonymize img before sending.
 	files = glob.glob(filepath+'*')
@@ -37,7 +39,11 @@ def sent_storage(dest):
 		cv2.imwrite(anonymize_path+str(f)[7:], new_img)
 	
 
-	# todo sent anonymized img data to s3?
+	# send the file
+	# if we one to send compress then send the zip file, pass in True
+	# if we want to send file one by one pass in false, be very careful with passing false,
+	# plz look at toS3.py for more detail
+	toS3.upload(True)
 
 	#delete contents after send
 	#clear_storage(filename)
