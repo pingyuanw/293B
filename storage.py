@@ -36,7 +36,7 @@ def clear_folder(foldername):
 		#print os.path.join(subdir, file)
 		filepath = subdir + os.sep + file
 
-		if filepath.endswith(".png"):
+		if filepath.endswith(".jpg"):
 			print (filepath)
 			if os.path.exists(filepath):
 				os.remove(filepath)
@@ -60,6 +60,7 @@ def sent_storage():
 	#delete contents after send
 	#clear_storage(filename)
 	clear_folder("anonymized")
+	clear_folder("data")
 
 if __name__ == '__main__':
 	sent_storage(1)
