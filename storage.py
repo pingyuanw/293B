@@ -29,6 +29,18 @@ def remove_file(filename):
 		os.remove(temp_path+filename+".jpg")
 
 
+# clear all the png file in foldername
+def clear_folder(foldername):
+	for subdir, dirs, files in os.walk(foldername):
+	for file in files:
+		#print os.path.join(subdir, file)
+		filepath = subdir + os.sep + file
+
+		if filepath.endswith(".png"):
+			print (filepath)
+			if os.path.exists(filepath):
+				os.remove(filepath)
+	print("clear compeleted")
 
 def sent_storage(dest):
 	#todo anonymize img before sending.
@@ -47,6 +59,7 @@ def sent_storage(dest):
 
 	#delete contents after send
 	#clear_storage(filename)
+	clear_folder("anonymized")
 
 if __name__ == '__main__':
 	sent_storage(1)

@@ -11,13 +11,21 @@
 #          continue
 import os
 import toS3
-# for subdir, dirs, files in os.walk("anonymized"):
-#     for file in files:
-#         #print os.path.join(subdir, file)
-#         filepath = subdir + os.sep + file
 
-#         if filepath.endswith(".png"):
-#             print (filepath)
+
+def clear_folder(foldername):
+	for subdir, dirs, files in os.walk(foldername):
+		for file in files:
+			#print os.path.join(subdir, file)
+			filepath = subdir + os.sep + file
+
+			if filepath.endswith(".png"):
+				print (filepath)
+				if os.path.exists(filepath):
+					os.remove(filepath)
+		print("clear compeleted")
+
+clear_folder("anonymized")
 
 # import zipfile
 
@@ -30,4 +38,4 @@ import toS3
 # zipf = zipfile.ZipFile('Test.zip','w',zipfile.ZIP_DEFLATED)
 # zipdir('anonymized',zipf)
 # zipf.close()
-toS3.upload(True)
+# toS3.upload(True)
