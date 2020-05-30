@@ -42,7 +42,7 @@ def clear_folder(foldername):
 				os.remove(filepath)
 	print("clear compeleted")
 
-def sent_storage(dest):
+def sent_storage():
 	#todo anonymize img before sending.
 	files = glob.glob(filepath+'*')
 	for f in files:
