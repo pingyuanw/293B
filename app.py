@@ -49,8 +49,8 @@ def predict():
 def feedback():
     if request.method == 'POST':
         hash_value = request.json['hash_value']
-        correct_label = request.json['label']
-        if(correct_label != "ok"):
+        correct_label = str.lower(request.json['label'])
+        if(correct_label in inference_handler.classes):
             storage.copy_file(correct_label, hash_value)
         #print("Label is "+correct_label+" Hash is "+hash_value) 
         #print("Received feedback") 

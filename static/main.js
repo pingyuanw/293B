@@ -136,7 +136,7 @@ function displayResult(data) {
   show(predResult);
   setTimeout(function() {
 	  if (confirm("Press OK if the classification is incorrect and you would like to provide the correct label to help improve the system.")) {
-		txt = window.prompt("Please enter the correct label:","");
+		txt = window.prompt("Please enter the correct label: \n(from 'plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')\nEnter 'no' if the object is not listed.");
 		fetch("/feedback", {
     		method: "POST",
     		headers: {
