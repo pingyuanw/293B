@@ -22,9 +22,8 @@ import resnet
 from collections import OrderedDict
 
 class Inference:
-	def __init__(self, aws_access_key_id, aws_secret_access_key):
-		self.aws_access_key_id = aws_access_key_id
-		self.aws_secret_access_key = aws_secret_access_key
+	def __init__(self, s3):
+		self.s3 = s3
 		self.filename = "model.pth"
 		self.classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 		self.MODEL_UPDATE_INTERVAL = 10 ## in seconds
@@ -39,9 +38,8 @@ class Inference:
 			cudnn.benchmark = True
 
 		if (os.path.exists(self.filename) == False):
-			s3 = boto3.client('s3',aws_access_key_id = self.aws_access_key_id, aws_secret_access_key = self.aws_secret_access_key)
 			print("Downloading model...\n")
-			s3.download_file('hummingbird-293', 'Models/resnet50_ckpt.pth', self.filename)
+			self.s3.download_file('hummingbird-293', 'Models/resnet50_ckpt.pth', self.filename)
 			print("Download complete!\n")
 		#self.model = self.load_model(self.filename)
 		self.model = torch.load(self.filename,map_location=device)

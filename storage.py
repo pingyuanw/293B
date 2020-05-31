@@ -6,15 +6,26 @@ import glob
 import cv2
 from shutil import copyfile
 import toS3
+import threading
+
+
+BATCH_SIZE = 2
 
 filepath = './data/'
 anonymize_path = './anonymized/'
 temp_path = './temp/'
+data_folder_count = 0
 
 def copy_file(label, hash_value):
+	global data_folder_count
 	if os.path.exists(temp_path+hash_value+".jpg"):
 		filename = datetime.datetime.now().strftime("%m-%d-%Y,%H-%M-%S")
 		copyfile(temp_path+hash_value+".jpg", filepath+label+"/"+label+"-"+filename+".jpg")
+		data_folder_count+=1
+		if data_folder_count == BATCH_SIZE:
+			upload_thread = threading.Thread(target=anonymize_and_upload)
+			upload_thread.start()			
+			data_folder_count=0
 
 def temp_store(filename, data):
 	#filename = datetime.datetime.now().strftime("%m-%d-%Y,%H:%M:%S")
@@ -22,6 +33,13 @@ def temp_store(filename, data):
 	#f.write(data)
 	#f.close()
 	data.save(temp_path+filename+".jpg","JPEG")
+
+def anonymize_and_upload():
+	print("Starting to send data to cloud...")
+	datafolder_to_anonymizedfolder()
+	toS3.upload(True)
+	clear_folder("anonymized")
+	print("Completed sending data to cloud")
 
 
 def remove_file(filename):
@@ -43,6 +61,7 @@ def clear_folder(foldername):
 	print("clear compeleted")
 
 def datafolder_to_anonymizedfolder():
+	count = 0
 	for root,dirs,_ in os.walk(filepath):
 		for d in dirs:
 			files=glob.glob(filepath+str(d)+'/*')
@@ -50,6 +69,10 @@ def datafolder_to_anonymizedfolder():
 				# 7 here is the lenegth of ./data/
 				new_img = anonymize.anonymize(str(f))
 				cv2.imwrite(anonymize_path+str(f)[7:], new_img)
+				os.remove(str(f))
+				count+=1
+				if (count == BATCH_SIZE):
+					return
 
 def sent_storage():
 	#todo anonymize img before sending.

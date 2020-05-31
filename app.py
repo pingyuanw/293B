@@ -3,6 +3,8 @@ import sys
 
 import inference
 import storage
+import boto3
+
 
 # Flask
 from flask import Flask, redirect, url_for, request, render_template, Response, jsonify, redirect
@@ -20,8 +22,8 @@ aws_secret_access_key=''
 # Declare a flask app
 app = Flask(__name__)
 
-
-inference_handler = inference.Inference(aws_access_key_id, aws_secret_access_key)
+s3 = boto3.client('s3',aws_access_key_id = aws_access_key_id, aws_secret_access_key = aws_secret_access_key)
+inference_handler = inference.Inference(s3)
 print('Model loaded. Check http://127.0.0.1:'+str(TCP_PORT))
 
 
@@ -47,13 +49,12 @@ def predict():
 
 @app.route('/feedback', methods=['GET', 'POST'])
 def feedback():
+    global s3
     if request.method == 'POST':
         hash_value = request.json['hash_value']
         correct_label = str.lower(request.json['label'])
         if(correct_label in inference_handler.classes):
             storage.copy_file(correct_label, hash_value)
-        #print("Label is "+correct_label+" Hash is "+hash_value) 
-        #print("Received feedback") 
         storage.remove_file(hash_value)
         resp = jsonify(success=True)
         return resp
