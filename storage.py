@@ -13,8 +13,8 @@ temp_path = './temp/'
 
 def copy_file(label, hash_value):
 	if os.path.exists(temp_path+hash_value+".jpg"):
-		filename = datetime.datetime.now().strftime("%m-%d-%Y,%H:%M:%S")
-		copyfile(temp_path+hash_value+".jpg", filepath+label+"."+filename+".jpg")
+		filename = datetime.datetime.now().strftime("%m-%d-%Y,%H-%M-%S")
+		copyfile(temp_path+hash_value+".jpg", filepath+label+"/"+label+"-"+filename+".jpg")
 
 def temp_store(filename, data):
 	#filename = datetime.datetime.now().strftime("%m-%d-%Y,%H:%M:%S")
@@ -32,23 +32,28 @@ def remove_file(filename):
 # clear all the png file in foldername
 def clear_folder(foldername):
 	for subdir, dirs, files in os.walk(foldername):
-	for file in files:
-		#print os.path.join(subdir, file)
-		filepath = subdir + os.sep + file
+		for file in files:
+			#print os.path.join(subdir, file)
+			filepath = subdir + os.sep + file
 
-		if filepath.endswith(".jpg"):
-			print (filepath)
-			if os.path.exists(filepath):
-				os.remove(filepath)
+			if filepath.endswith(".jpg"):
+				print (filepath)
+				if os.path.exists(filepath):
+					os.remove(filepath)
 	print("clear compeleted")
+
+def datafolder_to_anonymizedfolder():
+	for root,dirs,_ in os.walk(filepath):
+		for d in dirs:
+			files=glob.glob(filepath+str(d)+'/*')
+			for f in files:
+				# 7 here is the lenegth of ./data/
+				new_img = anonymize.anonymize(str(f))
+				cv2.imwrite(anonymize_path+str(f)[7:], new_img)
 
 def sent_storage():
 	#todo anonymize img before sending.
-	files = glob.glob(filepath+'*')
-	for f in files:
-		print(f)
-		new_img = anonymize.anonymize(str(f))
-		cv2.imwrite(anonymize_path+str(f)[7:], new_img)
+	datafolder_to_anonymizedfolder()
 	
 
 	# send the file
@@ -63,5 +68,5 @@ def sent_storage():
 	clear_folder("data")
 
 if __name__ == '__main__':
-	sent_storage(1)
+	datafolder_to_anonymizedfolder()
 
