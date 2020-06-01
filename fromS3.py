@@ -12,7 +12,7 @@ def downloadFromS3(buc_name,filename,dest_name):
 # we want to use this output in compareDate to see if that is the most 
 # recently used file
 # if coulndt locate model, return a date in 2000, and print Does not find
-def getLastModified(buc_name):
+def getLastModified():
 	s3 = boto3.client('s3')
 	listOfFiles = s3.list_objects_v2(Bucket='hummingbird-293')['Contents']
 	# need a proper search alg, implemented later on
@@ -24,7 +24,7 @@ def getLastModified(buc_name):
 		print("Does not find model")
 		return datetime.datetime(2000,1,1,0,0,0,0,tzinfo=datetime.timezone.utc)
 
-	return lastModified
+	return int(lastModified.timestamp())
 
 # this takes the original date and current date, compare them
 # if they are not equal that means, we need a update of model

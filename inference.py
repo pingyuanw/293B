@@ -2,6 +2,8 @@ import torch
 import torchvision
 from torchvision import transforms, models
 
+import fromS3
+
 from PIL import Image
 
 import numpy as np
@@ -27,24 +29,27 @@ class Inference:
 		self.filename = "model.pth"
 		self.classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 		self.MODEL_UPDATE_INTERVAL = 10 ## in seconds
+		self.last_modified_time = 0
 
-		device = 'cuda' if torch.cuda.is_available() else 'cpu'
-		print("device is : {}".format(device))
+		self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
+		print("device is : {}".format(self.device))
 		self.net = resnet.ResNet50()
-		self.net = self.net.to(device)
+		self.net = self.net.to(self.device)
 
-		if device == 'cuda':
+		if self.device == 'cuda':
 			self.net = torch.nn.DataParallel(net)
 			cudnn.benchmark = True
 
 		if (os.path.exists(self.filename) == False):
 			print("Downloading model...\n")
 			self.s3.download_file('hummingbird-293', 'Models/resnet50_ckpt.pth', self.filename)
+			self.last_modified_time = fromS3.getLastModified()
 			print("Download complete!\n")
+			print("Last modified time of model: "+str(last_modified_time))
 		#self.model = self.load_model(self.filename)
-		self.model = torch.load(self.filename,map_location=device)
+		self.model = torch.load(self.filename,map_location=self.device)
 		state = self.model['net']
-		if device != 'cuda':
+		if self.device != 'cuda':
 			new_state_dict = OrderedDict()
 			for k,v in state.items():
 				name = k[7:] # remove 'module.'
@@ -101,6 +106,30 @@ class Inference:
 		
 		while True:
 			time.sleep(self.MODEL_UPDATE_INTERVAL)
-			print("Updating model...\n")
+			print("Checking for model update...")
+			last_modified_in_cloud = fromS3.getLastModified()
+			if (last_modified_in_cloud > self.last_modified_time):
+				print("Update found! Downloading new model!")
+				os.remove(self.filename)
+				self.s3.download_file('hummingbird-293', 'Models/resnet50_ckpt.pth', self.filename)
+				self.last_modified_time = last_modified_in_cloud
+				model2 = torch.load(self.filename,map_location=self.device)
+				self.model = model2
+				state = self.model['net']
+				if self.device != 'cuda':
+					new_state_dict = OrderedDict()
+					for k,v in state.items():
+						name = k[7:] # remove 'module.'
+						new_state_dict[name] = v # load params
+					self.net.load_state_dict(new_state_dict)
+				else:
+					#net.load_state_dict(state,map_location = 'cpu')
+					self.net.load_state_dict(state)
+
+				self.net.eval()
+				print("Model updated! Last modified time: "+str(self.last_modified_time))
+
+			else:
+				print("No update found!\n")
 		
 		return

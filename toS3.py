@@ -1,6 +1,8 @@
 import boto3
 import zipfile
 import os
+import datetime
+
 # This function is used to compress directory in zip file
 def zipdir(path, ziph):
 	# ziph is zipfile handle
@@ -33,16 +35,14 @@ def upload(compressOrNot):
 					# s3.Bucket('hummingbird-293').put_object(Key = 'edgeTeam/'+filepath, Body=filepath)
 					print("send completed")
 	else:
-		filename = 'anonymized.zip'
-		zipf = zipfile.ZipFile('anonymized.zip','w',zipfile.ZIP_DEFLATED)
+		filename = 'anonymized-'+str(datetime.datetime.now().strftime("%m-%d-%Y,%H-%M-%S"))+'.zip'
+		zipf = zipfile.ZipFile('anonymized-'+str(datetime.datetime.now().strftime("%m-%d-%Y,%H-%M-%S"))+'.zip','w',zipfile.ZIP_DEFLATED)
 		zipdir('anonymized',zipf)
 		zipf.close()
 		# key is the dest file, body is the src file
 		s3.Bucket('hummingbird-293').put_object(Key = 'edgeTeam/'+filename, Body=filename)
+		os.remove(filename)
 		print("send completed")
-
-
-
 
 
 
