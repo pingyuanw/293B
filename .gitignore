@@ -1,6 +1,7 @@
 model.pth
 data.txt
 awscli-bundle.zip
+awscli-bundle
 
 # Created by https://www.gitignore.io/api/python
 # Edit at https://www.gitignore.io/?templates=python
