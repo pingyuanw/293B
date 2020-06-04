@@ -36,11 +36,11 @@ def upload(compressOrNot):
 					print("send completed")
 	else:
 		filename = 'anonymized-'+str(datetime.datetime.now().strftime("%m-%d-%Y,%H-%M-%S"))+'.zip'
-		zipf = zipfile.ZipFile('anonymized-'+str(datetime.datetime.now().strftime("%m-%d-%Y,%H-%M-%S"))+'.zip','w',zipfile.ZIP_DEFLATED)
+		zipf = zipfile.ZipFile(filename,'w',zipfile.ZIP_DEFLATED)
 		zipdir('anonymized',zipf)
 		zipf.close()
 		# key is the dest file, body is the src file
-		s3.Bucket('hummingbird-293').put_object(Key = 'edgeTeam/'+filename, Body=filename)
+		s3.Bucket('hummingbird-293').upload_file(Key = 'edgeTeam/'+filename, Filename='/home/ishtiyaque/293B/'+filename)
 		os.remove(filename)
 		print("send completed")
 

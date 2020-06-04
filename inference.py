@@ -45,7 +45,7 @@ class Inference:
 			self.s3.download_file('hummingbird-293', 'Models/resnet50_ckpt.pth', self.filename)
 			self.last_modified_time = fromS3.getLastModified()
 			print("Download complete!\n")
-			print("Last modified time of model: "+str(last_modified_time))
+			print("Last modified time of model: "+str(self.last_modified_time))
 		#self.model = self.load_model(self.filename)
 		self.model = torch.load(self.filename,map_location=self.device)
 		state = self.model['net']
